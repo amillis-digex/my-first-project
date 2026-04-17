@@ -340,6 +340,25 @@ h2 {
   letter-spacing: 0.08em;
 }
 
+#quote-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-family: 'VT323', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #d48fb0;
+  text-decoration: none;
+  border: 1px solid #d48fb0;
+  border-radius: 2rem;
+  padding: 0.15rem 0.75rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+#quote-link:hover {
+  color: #FF1493;
+  border-color: #FF1493;
+}
+
 /* ── Learning hint ── */
 .learning-hint {
   font-family: 'VT323', monospace;
