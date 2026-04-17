@@ -137,11 +137,12 @@
         const weight   = styleRand() > 0.5 ? 700 : 400;
 
         // Position sampling — try up to 20 seeds until outside the card
+        const maxLeft = ((vw - 260) / vw) * 100;
         let top, left, attempt = 0;
         do {
           const posRand = seededRand((baseHash ^ (attempt * 2654435761)) >>> 0);
           top  = 2 + posRand() * 92;
-          left = 1 + posRand() * 90;
+          left = 2 + posRand() * (maxLeft - 2);
           attempt++;
         } while (!outsideCard(top, left) && attempt < 20);
 
