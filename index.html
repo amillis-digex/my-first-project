@@ -207,8 +207,10 @@
           const color    = colors[Math.floor(rand() * colors.length)];
           const weight   = rand() > 0.5 ? 700 : 400;
 
-          const top  = zone.top  + row * slotH + rand() * slotH * 0.65;
-          const left = zone.left + col * slotW + rand() * slotW * 0.65;
+          const maxLeft = Math.max(0, 100 - 260 / vw * 100);
+          const maxTop  = Math.max(0, 100 - 80  / vh * 100);
+          const top  = Math.min(zone.top  + row * slotH + rand() * slotH * 0.65, maxTop);
+          const left = Math.min(zone.left + col * slotW + rand() * slotW * 0.65, maxLeft);
 
           return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
             <div class="wall-entry-name">${escapeHtml(m.name)}</div>
