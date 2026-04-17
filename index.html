@@ -231,39 +231,11 @@
       'QuickBooks':      'QuickBooks',
     };
 
-    const factCache = {};
-    const factIndex = {};
-
-    async function getWikiFacts(topic, fallback) {
-      if (factCache[topic]) return factCache[topic];
-      const title = WIKI_PAGES[topic];
-      const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`);
-      const data = await res.json();
-      const sentences = data.extract
-        .replace(/\(.*?\)/g, '')
-        .replace(/\[.*?\]/g, '')
-        .split(/(?<=[.!?])\s+/)
-        .map(s => s.trim())
-        .filter(s => s.length >= 40 && s.length <= 200);
-      factCache[topic] = sentences.length ? sentences : [fallback];
-      return factCache[topic];
-    }
-
-    async function openFact(topic, fallback) {
+    function openFact(topic, fact) {
       factTopicEl.textContent = topic;
-      factTextEl.textContent  = '✦  ✦  ✦';
-      factTextEl.classList.add('fact-loading');
+      factTextEl.textContent  = fact;
       factLinkEl.href = `https://en.wikipedia.org/wiki/${WIKI_PAGES[topic]}`;
       factLightbox.hidden = false;
-      try {
-        const facts = await getWikiFacts(topic, fallback);
-        if (!(topic in factIndex)) factIndex[topic] = 0;
-        factTextEl.textContent = facts[factIndex[topic] % facts.length];
-        factIndex[topic]++;
-      } catch {
-        factTextEl.textContent = fallback;
-      }
-      factTextEl.classList.remove('fact-loading');
     }
 
     function closeFact() { factLightbox.hidden = true; }
