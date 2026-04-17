@@ -298,59 +298,6 @@ h2 {
 .gb-status.gb-success { color: #cc0066; font-weight: 700; }
 .gb-status.gb-error   { color: #c00; font-weight: 700; }
 
-.gb-messages {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.gb-loading,
-.gb-empty {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #d48fb0;
-  font-family: 'VT323', monospace;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  padding: 0.5rem 0;
-}
-
-.gb-message {
-  background: linear-gradient(135deg, #fff0f8, #ffe4f4);
-  border: 2px solid #FFB6C1;
-  border-radius: 0.875rem;
-  padding: 0.875rem 1rem;
-  text-align: left;
-  box-shadow: 2px 2px 0 #FF69B4;
-}
-
-.gb-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.35rem;
-  gap: 0.5rem;
-}
-
-.gb-name {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1rem;
-  color: #cc0055;
-}
-
-.gb-time {
-  font-family: 'VT323', monospace;
-  font-size: 0.95rem;
-  color: #d48fb0;
-  white-space: nowrap;
-}
-
-.gb-text {
-  font-size: 0.875rem;
-  color: #5a1070;
-  line-height: 1.55;
-}
 
 /* ── Responsive ── */
 @media (max-width: 480px) {

@@ -67,44 +67,10 @@
       <p class="gb-status" id="gb-status" aria-live="polite"></p>
     </form>
 
-    <ul class="gb-messages" id="gb-messages">
-      <li class="gb-loading">Loading messages...</li>
-    </ul>
   </div>
 
   <script>
     const API = 'https://guestbook-api-production-8d92.up.railway.app';
-
-    function timeAgo(dateStr) {
-      const seconds = Math.floor((Date.now() - new Date(dateStr)) / 1000);
-      if (seconds < 60) return 'just now';
-      const minutes = Math.floor(seconds / 60);
-      if (minutes < 60) return `${minutes}m ago`;
-      const hours = Math.floor(minutes / 60);
-      if (hours < 24) return `${hours}h ago`;
-      const days = Math.floor(hours / 24);
-      if (days < 30) return `${days}d ago`;
-      const months = Math.floor(days / 30);
-      if (months < 12) return `${months}mo ago`;
-      return `${Math.floor(months / 12)}y ago`;
-    }
-
-    function renderMessages(messages) {
-      const list = document.getElementById('gb-messages');
-      if (!messages.length) {
-        list.innerHTML = '<li class="gb-empty">No messages yet — be the first! ♡</li>';
-        return;
-      }
-      list.innerHTML = messages.map(m => `
-        <li class="gb-message">
-          <div class="gb-meta">
-            <span class="gb-name">${escapeHtml(m.name)}</span>
-            <span class="gb-time">${timeAgo(m.created_at || m.createdAt || m.timestamp)}</span>
-          </div>
-          <p class="gb-text">${escapeHtml(m.message)}</p>
-        </li>
-      `).join('');
-    }
 
     function escapeHtml(str) {
       return String(str)
@@ -156,7 +122,6 @@
         const res = await fetch(`${API}/messages`);
         const data = await res.json();
         const messages = Array.isArray(data) ? data : (data.messages ?? []);
-        renderMessages(messages);
         renderWallMessages(messages);
       } catch {
         document.getElementById('gb-messages').innerHTML =
