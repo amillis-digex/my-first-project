@@ -101,6 +101,19 @@
       <p class="gb-status" id="gb-status" aria-live="polite"></p>
     </form>
 
+    <button class="gb-log-btn" id="gb-log-btn">View All Messages</button>
+
+    <div id="gb-log-lightbox" hidden>
+      <div id="gb-log-backdrop"></div>
+      <div id="gb-log-modal">
+        <div id="gb-log-header">
+          <span>✦ Guestbook Log ✦</span>
+          <button id="gb-log-close" aria-label="Close">✕</button>
+        </div>
+        <ul id="gb-log-list"></ul>
+      </div>
+    </div>
+
   </div>
 
   <div id="news-ticker" hidden>
@@ -186,16 +199,52 @@
       }).join('');
     }
 
+    let cachedMessages = [];
+
+    function timeAgo(dateStr) {
+      const seconds = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+      if (seconds < 60) return 'just now';
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ago`;
+    }
+
     async function loadMessages() {
       try {
         const res = await fetch(`${API}/messages`);
         const data = await res.json();
-        const messages = Array.isArray(data) ? data : (data.messages ?? []);
-        renderWallMessages(messages);
+        cachedMessages = Array.isArray(data) ? data : (data.messages ?? []);
+        renderWallMessages(cachedMessages);
       } catch {
         // wall silently fails if messages can't load
       }
     }
+
+    // Message log modal
+    document.getElementById('gb-log-btn').addEventListener('click', () => {
+      const list = document.getElementById('gb-log-list');
+      if (!cachedMessages.length) {
+        list.innerHTML = '<li class="gb-log-empty">No messages yet — be the first! ♡</li>';
+      } else {
+        list.innerHTML = [...cachedMessages].reverse().map(m => `
+          <li class="gb-log-entry">
+            <div class="gb-log-meta">
+              <span class="gb-log-name">${escapeHtml(m.name)}</span>
+              <span class="gb-log-time">${timeAgo(m.timestamp)}</span>
+            </div>
+            <p class="gb-log-msg">${escapeHtml(m.message)}</p>
+          </li>`).join('');
+      }
+      document.getElementById('gb-log-lightbox').hidden = false;
+    });
+
+    function closeLog() { document.getElementById('gb-log-lightbox').hidden = true; }
+    document.getElementById('gb-log-close').addEventListener('click', closeLog);
+    document.getElementById('gb-log-backdrop').addEventListener('click', closeLog);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLog(); });
 
     document.getElementById('guestbook-form').addEventListener('submit', async (e) => {
       e.preventDefault();
