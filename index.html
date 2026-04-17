@@ -35,29 +35,38 @@
     <div class="divider"></div>
 
     <h2>Currently Learning</h2>
+    <p class="learning-hint">Select a topic to learn something new!</p>
     <ul class="learning-list">
-      <li>
+      <li role="button" tabindex="0"
+          data-topic="Web Development"
+          data-fact="The first website ever built (1991) is still live today at info.cern.ch!">
         <span class="icon">&#128187;</span>
         <div>
           <strong>Web Development</strong>
           <p>Building modern websites with HTML, CSS, and JavaScript.</p>
         </div>
       </li>
-      <li>
+      <li role="button" tabindex="0"
+          data-topic="UI/UX Design"
+          data-fact="Users form an opinion about a website in just 50 milliseconds — faster than a blink!">
         <span class="icon">&#127775;</span>
         <div>
           <strong>UI/UX Design</strong>
           <p>Designing clean, user-friendly interfaces.</p>
         </div>
       </li>
-      <li>
+      <li role="button" tabindex="0"
+          data-topic="Data Analysis"
+          data-fact="'Data' is the plural of 'datum,' a Latin word meaning 'something given.'">
         <span class="icon">&#128200;</span>
         <div>
           <strong>Data Analysis</strong>
           <p>Turning raw data into meaningful insights.</p>
         </div>
       </li>
-      <li>
+      <li role="button" tabindex="0"
+          data-topic="QuickBooks"
+          data-fact="QuickBooks launched in 1992 — the same year as the first text message ever sent!">
         <span class="icon">&#129518;</span>
         <div>
           <strong>Always relearning QuickBooks</strong>
@@ -65,6 +74,15 @@
         </div>
       </li>
     </ul>
+
+    <div id="fact-lightbox" hidden>
+      <div id="fact-backdrop"></div>
+      <div id="fact-bubble">
+        <p id="fact-topic-label"></p>
+        <p id="fact-text"></p>
+        <span id="fact-close" aria-label="Close">✕</span>
+      </div>
+    </div>
 
     <div class="divider"></div>
 
@@ -198,6 +216,30 @@
     });
 
     loadMessages();
+
+    // Fact bubble
+    const factLightbox  = document.getElementById('fact-lightbox');
+    const factTopicEl   = document.getElementById('fact-topic-label');
+    const factTextEl    = document.getElementById('fact-text');
+
+    function openFact(topic, fact) {
+      factTopicEl.textContent = topic;
+      factTextEl.textContent  = fact;
+      factLightbox.hidden = false;
+    }
+
+    function closeFact() { factLightbox.hidden = true; }
+
+    document.querySelectorAll('.learning-list li').forEach(li => {
+      li.addEventListener('click', () => openFact(li.dataset.topic, li.dataset.fact));
+      li.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFact(li.dataset.topic, li.dataset.fact); }
+      });
+    });
+
+    document.getElementById('fact-backdrop').addEventListener('click', closeFact);
+    document.getElementById('fact-close').addEventListener('click', closeFact);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFact(); });
 
     // Lightbox
     const lightbox = document.getElementById('lightbox');

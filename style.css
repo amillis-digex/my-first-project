@@ -312,6 +312,99 @@ h2 {
   line-height: 1.5;
 }
 
+/* ── Learning hint ── */
+.learning-hint {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #d48fb0;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+  margin-top: -0.75rem;
+}
+
+/* ── Fact bubble ── */
+#fact-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#fact-lightbox[hidden] { display: none; }
+
+#fact-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 0, 42, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+#fact-bubble {
+  position: relative;
+  z-index: 1;
+  width: min(320px, 82vw);
+  height: min(320px, 82vw);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF1493, #cc00ff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  text-align: center;
+  box-shadow:
+    0 0 0 4px #fff,
+    0 0 0 7px #FF69B4,
+    0 0 50px rgba(255, 20, 147, 0.6);
+  cursor: default;
+  animation: pop-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+#fact-topic-label {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+#fact-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.5;
+}
+
+#fact-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#fact-close:hover { background: rgba(255, 255, 255, 0.45); }
+
+.learning-list li { cursor: pointer; }
+
 /* ── Guestbook ── */
 .guestbook-form {
   display: flex;
