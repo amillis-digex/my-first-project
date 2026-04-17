@@ -343,23 +343,20 @@ h2 {
 #quote-link {
   display: inline-block;
   margin-top: 0.75rem;
-  font-family: 'VT323', monospace;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  color: white;
   text-decoration: none;
-  background: #FF1493;
-  padding: 1.75rem 1.75rem 0.6rem;
-  clip-path: polygon(0% 100%, 0% 50%, 20% 65%, 50% 10%, 80% 65%, 100% 50%, 100% 100%);
-  filter: drop-shadow(0 0 6px rgba(255, 20, 147, 0.5));
-  transition: background 0.15s, filter 0.15s;
-  text-align: center;
-  min-width: 100px;
 }
 
-#quote-link:hover {
-  background: #cc0066;
-  filter: drop-shadow(0 0 10px rgba(204, 0, 102, 0.7));
+#quote-link img {
+  display: block;
+  height: 48px;
+  width: auto;
+  transition: transform 0.15s, filter 0.15s;
+  filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.4));
+}
+
+#quote-link:hover img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(255, 20, 147, 0.7));
 }
 
 /* ── Learning hint ── */
