@@ -80,6 +80,7 @@
       <div id="fact-bubble">
         <p id="fact-topic-label"></p>
         <p id="fact-text"></p>
+        <a id="fact-link" target="_blank" rel="noopener noreferrer">learn more ↗</a>
         <span id="fact-close" aria-label="Close">✕</span>
       </div>
     </div>
@@ -221,6 +222,7 @@
     const factLightbox = document.getElementById('fact-lightbox');
     const factTopicEl  = document.getElementById('fact-topic-label');
     const factTextEl   = document.getElementById('fact-text');
+    const factLinkEl   = document.getElementById('fact-link');
 
     const WIKI_PAGES = {
       'Web Development': 'Web_development',
@@ -251,6 +253,7 @@
       factTopicEl.textContent = topic;
       factTextEl.textContent  = '✦  ✦  ✦';
       factTextEl.classList.add('fact-loading');
+      factLinkEl.href = `https://en.wikipedia.org/wiki/${WIKI_PAGES[topic]}`;
       factLightbox.hidden = false;
       try {
         const facts = await getWikiFacts(topic, fallback);

@@ -384,6 +384,20 @@ h2 {
   line-height: 1.5;
 }
 
+#fact-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+#fact-link:hover { color: #fff; }
+
 #fact-close {
   position: absolute;
   top: 1.25rem;
