@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="wall-messages" aria-hidden="true"></div>
   <div class="card">
     <div class="photo-placeholder">
       <img src="photo.png" alt="Alanna Millis" />
@@ -113,11 +114,50 @@
         .replace(/"/g, '&quot;');
     }
 
+    function seededRand(seed) {
+      let s = Math.abs(seed) >>> 0;
+      return () => {
+        s = (Math.imul(1664525, s) + 1013904223) >>> 0;
+        return s / 0x100000000;
+      };
+    }
+
+    function hashStr(str) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 0x01000193) >>> 0;
+      }
+      return h;
+    }
+
+    function renderWallMessages(messages) {
+      const wall = document.getElementById('wall-messages');
+      const colors = ['255,20,147', '204,0,102', '160,0,220', '255,0,200', '180,0,255'];
+      wall.innerHTML = messages.slice(0, 40).map(m => {
+        const rand = seededRand(hashStr(m.name + m.message));
+        const top      = 2 + rand() * 92;
+        const left     = 1 + rand() * 90;
+        const rotation = (rand() - 0.5) * 28;
+        const size     = 0.85 + rand() * 1.1;
+        const opacity  = 0.13 + rand() * 0.22;
+        const color    = colors[Math.floor(rand() * colors.length)];
+        const weight   = rand() > 0.5 ? 700 : 400;
+        const msg      = m.message.length > 72 ? m.message.slice(0, 70) + '…' : m.message;
+        return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
+          <div class="wall-entry-name">${escapeHtml(m.name)}</div>
+          <div class="wall-entry-msg">${escapeHtml(msg)}</div>
+        </div>`;
+      }).join('');
+    }
+
     async function loadMessages() {
       try {
         const res = await fetch(`${API}/messages`);
         const data = await res.json();
-        renderMessages(Array.isArray(data) ? data : (data.messages ?? []));
+        const messages = Array.isArray(data) ? data : (data.messages ?? []);
+        renderMessages(messages);
+        renderWallMessages(messages);
       } catch {
         document.getElementById('gb-messages').innerHTML =
           '<li class="gb-empty">Could not load messages.</li>';
