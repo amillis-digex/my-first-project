@@ -109,16 +109,43 @@
     function renderWallMessages(messages) {
       const wall = document.getElementById('wall-messages');
       const colors = ['255,20,147', '204,0,102', '160,0,220', '255,0,200', '180,0,255'];
+
+      const rect = document.querySelector('.card').getBoundingClientRect();
+      const pad  = 32;
+      const vw   = window.innerWidth;
+      const vh   = window.innerHeight;
+      const excl = {
+        top:    (rect.top    - pad) / vh * 100,
+        bottom: (rect.bottom + pad) / vh * 100,
+        left:   (rect.left   - pad) / vw * 100,
+        right:  (rect.right  + pad) / vw * 100,
+      };
+
+      function outsideCard(t, l) {
+        return t < excl.top || t > excl.bottom || l < excl.left || l > excl.right;
+      }
+
       wall.innerHTML = messages.slice(0, 40).map(m => {
-        const rand = seededRand(hashStr(m.name + m.message));
-        const top      = 2 + rand() * 92;
-        const left     = 1 + rand() * 90;
-        const rotation = (rand() - 0.5) * 28;
-        const size     = 0.85 + rand() * 1.1;
-        const opacity  = 0.22 + rand() * 0.3;
-        const color    = colors[Math.floor(rand() * colors.length)];
-        const weight   = rand() > 0.5 ? 700 : 400;
-        const msg      = m.message.length > 72 ? m.message.slice(0, 70) + '…' : m.message;
+        const baseHash = hashStr(m.name + m.message);
+
+        // Style is always derived from the base hash (stable across attempts)
+        const styleRand = seededRand(baseHash);
+        const rotation = (styleRand() - 0.5) * 28;
+        const size     = 0.85 + styleRand() * 1.1;
+        const opacity  = 0.22 + styleRand() * 0.3;
+        const color    = colors[Math.floor(styleRand() * colors.length)];
+        const weight   = styleRand() > 0.5 ? 700 : 400;
+
+        // Position sampling — try up to 20 seeds until outside the card
+        let top, left, attempt = 0;
+        do {
+          const posRand = seededRand((baseHash ^ (attempt * 2654435761)) >>> 0);
+          top  = 2 + posRand() * 92;
+          left = 1 + posRand() * 90;
+          attempt++;
+        } while (!outsideCard(top, left) && attempt < 20);
+
+        const msg = m.message.length > 72 ? m.message.slice(0, 70) + '…' : m.message;
         return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
           <div class="wall-entry-name">${escapeHtml(m.name)}</div>
           <div class="wall-entry-msg">${escapeHtml(msg)}</div>
