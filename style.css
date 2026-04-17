@@ -86,6 +86,7 @@ body {
 
 /* Photo placeholder */
 .photo-placeholder {
+  position: relative;
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -113,6 +114,84 @@ body {
   object-fit: cover;
   border-radius: 50%;
   display: block;
+}
+
+.photo-play-hint {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(204, 0, 102, 0.45);
+  color: white;
+  font-size: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.photo-placeholder:hover .photo-play-hint {
+  opacity: 1;
+}
+
+/* ── Lightbox ── */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#lightbox[hidden] {
+  display: none;
+}
+
+#lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 0, 42, 0.88);
+  backdrop-filter: blur(6px);
+}
+
+#lightbox-content {
+  position: relative;
+  z-index: 1;
+  width: min(92vw, 720px);
+  border: 3px solid #FF69B4;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(255, 20, 147, 0.5), 6px 6px 0 #FF1493;
+}
+
+#lightbox-video {
+  display: block;
+  width: 100%;
+  max-height: 80vh;
+  background: #000;
+}
+
+#lightbox-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  z-index: 2;
+  background: #FF1493;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s, transform 0.15s;
+}
+
+#lightbox-close:hover {
+  background: #cc0066;
+  transform: scale(1.1);
 }
 
 /* Name */

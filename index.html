@@ -8,9 +8,18 @@
 </head>
 <body>
   <div id="wall-messages" aria-hidden="true"></div>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Intro video" hidden>
+    <div id="lightbox-backdrop"></div>
+    <div id="lightbox-content">
+      <button id="lightbox-close" aria-label="Close video">✕</button>
+      <video id="lightbox-video" src="Hi%20its%20barbie.mp4" controls playsinline></video>
+    </div>
+  </div>
   <div class="card">
-    <div class="photo-placeholder">
+    <div class="photo-placeholder" id="photo-btn" role="button" tabindex="0" aria-label="Play intro video">
       <img src="photo.png" alt="Alanna Millis" />
+      <div class="photo-play-hint">▶</div>
     </div>
 
     <h1>Alanna Millis</h1>
@@ -124,8 +133,7 @@
         const messages = Array.isArray(data) ? data : (data.messages ?? []);
         renderWallMessages(messages);
       } catch {
-        document.getElementById('gb-messages').innerHTML =
-          '<li class="gb-empty">Could not load messages.</li>';
+        // wall silently fails if messages can't load
       }
     }
 
@@ -161,6 +169,29 @@
     });
 
     loadMessages();
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const video    = document.getElementById('lightbox-video');
+
+    function openLightbox() {
+      lightbox.hidden = false;
+      video.play();
+    }
+
+    function closeLightbox() {
+      lightbox.hidden = true;
+      video.pause();
+      video.currentTime = 0;
+    }
+
+    document.getElementById('photo-btn').addEventListener('click', openLightbox);
+    document.getElementById('photo-btn').addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(); }
+    });
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    document.getElementById('lightbox-backdrop').addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
   </script>
 </body>
 </html>
