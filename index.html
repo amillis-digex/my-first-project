@@ -304,13 +304,24 @@
       { q: "the only thing required to be a woman is to identify as one.", a: "amanda lovelace" },
     ];
 
-    (function loadQuote() {
-      const start = new Date(new Date().getFullYear(), 0, 0);
-      const dayOfYear = Math.floor((Date.now() - start) / 86400000);
-      const { q, a } = QUOTES[dayOfYear % QUOTES.length];
-      document.getElementById('quote-text').textContent = `"${q}"`;
-      document.getElementById('quote-author').textContent = `— ${a}`;
-    })();
+    let quoteIndex = 0;
+
+    function showQuote(index) {
+      const { q, a } = QUOTES[index % QUOTES.length];
+      const textEl   = document.getElementById('quote-text');
+      const authorEl = document.getElementById('quote-author');
+      textEl.style.opacity   = '0';
+      authorEl.style.opacity = '0';
+      setTimeout(() => {
+        textEl.textContent   = `"${q}"`;
+        authorEl.textContent = `— ${a}`;
+        textEl.style.opacity   = '1';
+        authorEl.style.opacity = '1';
+      }, 400);
+    }
+
+    showQuote(quoteIndex);
+    setInterval(() => { quoteIndex++; showQuote(quoteIndex); }, 60000);
 
     // News ticker
     async function loadTicker() {

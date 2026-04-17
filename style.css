@@ -321,6 +321,11 @@ h2 {
   box-shadow: 0 0 14px rgba(255, 20, 147, 0.45), 0 0 0 1px #FF1493;
 }
 
+#quote-text,
+#quote-author {
+  transition: opacity 0.4s ease;
+}
+
 #quote-text {
   font-family: 'VT323', monospace;
   font-size: 1.15rem;
