@@ -160,12 +160,11 @@
       const vw   = window.innerWidth;
       const vh   = window.innerHeight;
 
-      // Four natural zones around the card (as % of viewport)
       const allZones = [
-        { top: 0,                               left: 0,                              w: (rect.left - pad) / vw * 100,          h: 100 },
-        { top: 0,                               left: (rect.right + pad) / vw * 100,  w: (vw - rect.right - pad) / vw * 100,   h: 100 },
-        { top: 0,                               left: 0,                              w: 100,                                    h: (rect.top - pad) / vh * 100 },
-        { top: (rect.bottom + pad) / vh * 100,  left: 0,                              w: 100,                                    h: (vh - rect.bottom - pad) / vh * 100 },
+        { top: 0,                               left: 0,                              w: (rect.left - pad) / vw * 100,         h: 100 },
+        { top: 0,                               left: (rect.right + pad) / vw * 100,  w: (vw - rect.right - pad) / vw * 100,  h: 100 },
+        { top: 0,                               left: 0,                              w: 100,                                   h: (rect.top - pad) / vh * 100 },
+        { top: (rect.bottom + pad) / vh * 100,  left: 0,                              w: 100,                                   h: (vh - rect.bottom - pad) / vh * 100 },
       ].filter(z => z.w >= 4 && z.h >= 4);
 
       if (!allZones.length) return;
@@ -173,28 +172,49 @@
       const areas     = allZones.map(z => z.w * z.h);
       const totalArea = areas.reduce((s, a) => s + a, 0);
 
-      wall.innerHTML = messages.map(m => {
-        const rand     = seededRand(hashStr(m.name + m.message));
-        const rotation = (rand() - 0.5) * 26;
-        const size     = 0.85 + rand() * 0.9;
-        const opacity  = 0.22 + rand() * 0.3;
-        const color    = colors[Math.floor(rand() * colors.length)];
-        const weight   = rand() > 0.5 ? 700 : 400;
-
-        let pick = rand() * totalArea;
-        let zone = allZones[allZones.length - 1];
+      // Assign each message to a zone using a distinct seed
+      const zoneMessages = allZones.map(() => []);
+      messages.forEach(m => {
+        const r  = seededRand(hashStr(m.name + m.message) ^ 0xABCD1234);
+        let pick = r() * totalArea;
+        let zi   = allZones.length - 1;
         for (let i = 0; i < allZones.length; i++) {
           pick -= areas[i];
-          if (pick <= 0) { zone = allZones[i]; break; }
+          if (pick <= 0) { zi = i; break; }
         }
+        zoneMessages[zi].push(m);
+      });
 
-        const top  = zone.top  + rand() * zone.h * 0.9;
-        const left = zone.left + rand() * zone.w * 0.9;
+      wall.innerHTML = allZones.flatMap((zone, zi) => {
+        const msgs = zoneMessages[zi];
+        if (!msgs.length) return [];
 
-        return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
-          <div class="wall-entry-name">${escapeHtml(m.name)}</div>
-          <div class="wall-entry-msg">${escapeHtml(m.message)}</div>
-        </div>`;
+        // Subdivide zone into a slot grid to reduce overlap
+        const aspect = zone.w / zone.h;
+        const cols   = Math.max(1, Math.round(Math.sqrt(msgs.length * aspect)));
+        const rows   = Math.ceil(msgs.length / cols);
+        const slotW  = zone.w / cols;
+        const slotH  = zone.h / rows;
+
+        return msgs.map((m, idx) => {
+          const col  = idx % cols;
+          const row  = Math.floor(idx / cols);
+          const rand = seededRand(hashStr(m.name + m.message));
+
+          const rotation = (rand() - 0.5) * 22;
+          const size     = 0.9 + rand() * 0.7;
+          const opacity  = 0.5 + rand() * 0.3;
+          const color    = colors[Math.floor(rand() * colors.length)];
+          const weight   = rand() > 0.5 ? 700 : 400;
+
+          const top  = zone.top  + row * slotH + rand() * slotH * 0.65;
+          const left = zone.left + col * slotW + rand() * slotW * 0.65;
+
+          return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
+            <div class="wall-entry-name">${escapeHtml(m.name)}</div>
+            <div class="wall-entry-msg">${escapeHtml(m.message)}</div>
+          </div>`;
+        });
       }).join('');
     }
 
