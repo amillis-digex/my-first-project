@@ -152,11 +152,11 @@
     }
 
     function renderWallMessages(messages) {
-      const wall = document.getElementById('wall-messages');
+      const wall   = document.getElementById('wall-messages');
       const colors = ['255,20,147', '204,0,102', '160,0,220', '255,0,200', '180,0,255'];
 
       const rect = document.querySelector('.card').getBoundingClientRect();
-      const pad  = 32;
+      const pad  = 40;
       const vw   = window.innerWidth;
       const vh   = window.innerHeight;
       const excl = {
@@ -166,35 +166,37 @@
         right:  (rect.right  + pad) / vw * 100,
       };
 
-      function outsideCard(t, l) {
-        return t < excl.top || t > excl.bottom || l < excl.left || l > excl.right;
+      // Build a grid of cells, keeping only those outside the card
+      const cols = 6, rows = 8;
+      const cw = 100 / cols, ch = 100 / rows;
+      const cells = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const cx = c * cw + cw / 2;
+          const cy = r * ch + ch / 2;
+          if (cx < excl.left || cx > excl.right || cy < excl.top || cy > excl.bottom) {
+            cells.push({ top: r * ch, left: c * cw, w: cw, h: ch });
+          }
+        }
       }
 
-      wall.innerHTML = messages.slice(0, 40).map(m => {
-        const baseHash = hashStr(m.name + m.message);
+      wall.innerHTML = messages.slice(0, cells.length).map((m, i) => {
+        const cell      = cells[i % cells.length];
+        const styleRand = seededRand(hashStr(m.name + m.message));
+        const rotation  = (styleRand() - 0.5) * 24;
+        const size      = 0.85 + styleRand() * 1.0;
+        const opacity   = 0.22 + styleRand() * 0.3;
+        const color     = colors[Math.floor(styleRand() * colors.length)];
+        const weight    = styleRand() > 0.5 ? 700 : 400;
 
-        // Style is always derived from the base hash (stable across attempts)
-        const styleRand = seededRand(baseHash);
-        const rotation = (styleRand() - 0.5) * 28;
-        const size     = 0.85 + styleRand() * 1.1;
-        const opacity  = 0.22 + styleRand() * 0.3;
-        const color    = colors[Math.floor(styleRand() * colors.length)];
-        const weight   = styleRand() > 0.5 ? 700 : 400;
+        // Small seeded jitter within the cell
+        const jitter = seededRand(hashStr(m.name + m.message) ^ 0x12345678);
+        const top    = cell.top  + jitter() * cell.h * 0.55;
+        const left   = cell.left + jitter() * cell.w * 0.55;
 
-        // Position sampling — try up to 20 seeds until outside the card
-        const maxLeft = ((vw - 260) / vw) * 100;
-        let top, left, attempt = 0;
-        do {
-          const posRand = seededRand((baseHash ^ (attempt * 2654435761)) >>> 0);
-          top  = 2 + posRand() * 92;
-          left = 2 + posRand() * (maxLeft - 2);
-          attempt++;
-        } while (!outsideCard(top, left) && attempt < 20);
-
-        const msg = m.message.length > 72 ? m.message.slice(0, 70) + '…' : m.message;
         return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
           <div class="wall-entry-name">${escapeHtml(m.name)}</div>
-          <div class="wall-entry-msg">${escapeHtml(msg)}</div>
+          <div class="wall-entry-msg">${escapeHtml(m.message)}</div>
         </div>`;
       }).join('');
     }
