@@ -287,37 +287,16 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
     // Quote of the day — rotates daily, no API needed
+    // Add more amanda lovelace quotes here from your own copies of her books!
     const QUOTES = [
-      { q: "An investment in knowledge pays the best interest.", a: "Benjamin Franklin" },
-      { q: "Price is what you pay. Value is what you get.", a: "Warren Buffett" },
-      { q: "Without data, you're just another person with an opinion.", a: "W. Edwards Deming" },
-      { q: "The beautiful thing about learning is that no one can take it away from you.", a: "B.B. King" },
-      { q: "Rule No. 1: Never lose money. Rule No. 2: Never forget Rule No. 1.", a: "Warren Buffett" },
-      { q: "The goal is to turn data into information, and information into insight.", a: "Carly Fiorina" },
-      { q: "A budget is telling your money where to go instead of wondering where it went.", a: "Dave Ramsey" },
-      { q: "Design is not just what it looks like and feels like. Design is how it works.", a: "Steve Jobs" },
-      { q: "The more I learn, the more I realize how much I don't know.", a: "Albert Einstein" },
-      { q: "Do not save what is left after spending; spend what is left after saving.", a: "Warren Buffett" },
-      { q: "In God we trust; all others must bring data.", a: "W. Edwards Deming" },
-      { q: "The only way to do great work is to love what you do.", a: "Steve Jobs" },
-      { q: "Beware of little expenses; a small leak will sink a great ship.", a: "Benjamin Franklin" },
-      { q: "Good design is obvious. Great design is transparent.", a: "Joe Sparano" },
-      { q: "The expert in anything was once a beginner.", a: "Helen Hayes" },
-      { q: "Numbers have an important story to tell. They rely on you to give them a clear and convincing voice.", a: "Stephen Few" },
-      { q: "The most important investment you can make is in yourself.", a: "Warren Buffett" },
-      { q: "Live as if you were to die tomorrow. Learn as if you were to live forever.", a: "Mahatma Gandhi" },
-      { q: "You don't have to be great to start, but you have to start to be great.", a: "Zig Ziglar" },
-      { q: "It always seems impossible until it's done.", a: "Nelson Mandela" },
-      { q: "The advance of technology is based on making it fit in so that you don't even notice it.", a: "Bill Gates" },
-      { q: "Success is stumbling from failure to failure with no loss of enthusiasm.", a: "Winston Churchill" },
-      { q: "Whether you think you can or you think you can't, you're right.", a: "Henry Ford" },
-      { q: "Data is the new oil.", a: "Clive Humby" },
-      { q: "The secret of getting ahead is getting started.", a: "Mark Twain" },
-      { q: "In the middle of every difficulty lies opportunity.", a: "Albert Einstein" },
-      { q: "You can't use up creativity. The more you use, the more you have.", a: "Maya Angelou" },
-      { q: "It's not about how much money you make, but how much money you keep.", a: "Robert Kiyosaki" },
-      { q: "The art of progress is to preserve order amid change and to preserve change amid order.", a: "Alfred North Whitehead" },
-      { q: "Technology is best when it brings people together.", a: "Matt Mullenweg" },
+      { q: "you are a girl who is on fire. don't let anyone turn you into ashes.", a: "amanda lovelace" },
+      { q: "she is water. powerful enough to drown you, soft enough to cleanse you, deep enough to save you.", a: "amanda lovelace" },
+      { q: "you don't have to set yourself on fire to keep others warm.", a: "amanda lovelace" },
+      { q: "the princess saved herself in this one.", a: "amanda lovelace" },
+      { q: "i am not afraid of dying. i am afraid of never really living.", a: "amanda lovelace" },
+      { q: "she overcame everything that was meant to destroy her.", a: "amanda lovelace" },
+      { q: "you were born to be real, not to be perfect.", a: "amanda lovelace" },
+      { q: "unlearn what they taught you about yourself.", a: "amanda lovelace" },
     ];
 
     (function loadQuote() {
