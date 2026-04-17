@@ -342,21 +342,24 @@ h2 {
 
 #quote-link {
   display: inline-block;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   font-family: 'VT323', monospace;
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-  color: #d48fb0;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: white;
   text-decoration: none;
-  border: 1px solid #d48fb0;
-  border-radius: 2rem;
-  padding: 0.15rem 0.75rem;
-  transition: color 0.15s, border-color 0.15s;
+  background: #FF1493;
+  padding: 1.75rem 1.75rem 0.6rem;
+  clip-path: polygon(0% 100%, 0% 50%, 20% 65%, 50% 10%, 80% 65%, 100% 50%, 100% 100%);
+  filter: drop-shadow(0 0 6px rgba(255, 20, 147, 0.5));
+  transition: background 0.15s, filter 0.15s;
+  text-align: center;
+  min-width: 100px;
 }
 
 #quote-link:hover {
-  color: #FF1493;
-  border-color: #FF1493;
+  background: #cc0066;
+  filter: drop-shadow(0 0 10px rgba(204, 0, 102, 0.7));
 }
 
 /* ── Learning hint ── */
