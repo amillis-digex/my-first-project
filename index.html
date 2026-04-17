@@ -32,6 +32,11 @@
       along the way.
     </p>
 
+    <div id="quote-block">
+      <p id="quote-text">✦ &nbsp; ✦ &nbsp; ✦</p>
+      <p id="quote-author"></p>
+    </div>
+
     <div class="divider"></div>
 
     <h2>Currently Learning</h2>
@@ -96,6 +101,13 @@
       <p class="gb-status" id="gb-status" aria-live="polite"></p>
     </form>
 
+  </div>
+
+  <div id="news-ticker" hidden>
+    <span id="ticker-label">★ QB NEWS ★</span>
+    <div id="ticker-track">
+      <div id="ticker-content"></div>
+    </div>
   </div>
 
   <script>
@@ -273,6 +285,47 @@
     document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
     document.getElementById('lightbox-backdrop').addEventListener('click', closeLightbox);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Quote of the day
+    async function loadQuote() {
+      const cached = sessionStorage.getItem('qotd');
+      try {
+        const { q, a } = cached ? JSON.parse(cached) : await fetchQuote();
+        document.getElementById('quote-text').textContent = `"${q}"`;
+        document.getElementById('quote-author').textContent = `— ${a}`;
+      } catch {
+        document.getElementById('quote-block').hidden = true;
+      }
+    }
+
+    async function fetchQuote() {
+      const res = await fetch('https://zenquotes.io/api/today');
+      const [item] = await res.json();
+      sessionStorage.setItem('qotd', JSON.stringify({ q: item.q, a: item.a }));
+      return { q: item.q, a: item.a };
+    }
+
+    loadQuote();
+
+    // News ticker
+    async function loadTicker() {
+      try {
+        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://quickbooks.intuit.com/blog/feed/');
+        const data = await res.json();
+        const items = (data.items || []).slice(0, 8);
+        if (!items.length) throw new Error();
+        const html = items.map(item =>
+          `<a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a><span class="ticker-sep"> ✦ </span>`
+        ).join('');
+        const content = document.getElementById('ticker-content');
+        content.innerHTML = html + html;
+        document.getElementById('news-ticker').hidden = false;
+      } catch {
+        // ticker silently hidden if feed fails
+      }
+    }
+
+    loadTicker();
   </script>
 </body>
 </html>

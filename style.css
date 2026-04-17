@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Fredoka+One&family=VT323&family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Fredoka+One&family=Orbitron:wght@400;700&family=VT323&family=Nunito:wght@400;600;700;800&display=swap');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -45,7 +45,7 @@ body {
     radial-gradient(ellipse at 50% 85%, rgba(180, 0, 255, 0.25) 0%, transparent 55%),
     #12002a;
   font-family: 'Nunito', 'Segoe UI', sans-serif;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 4rem;
 }
 
 .card {
@@ -312,6 +312,34 @@ h2 {
   line-height: 1.5;
 }
 
+/* ── Quote of the day ── */
+#quote-block {
+  background: #000;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0 0;
+  box-shadow: 0 0 14px rgba(255, 20, 147, 0.45), 0 0 0 1px #FF1493;
+}
+
+#quote-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.68rem;
+  color: #FF1493;
+  text-shadow: 0 0 8px rgba(255, 20, 147, 0.9);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+
+#quote-author {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  color: #cc0066;
+  text-shadow: 0 0 6px rgba(204, 0, 102, 0.7);
+  text-align: right;
+  letter-spacing: 0.05em;
+}
+
 /* ── Learning hint ── */
 .learning-hint {
   font-family: 'VT323', monospace;
@@ -484,6 +512,69 @@ h2 {
 .gb-status.gb-success { color: #cc0066; font-weight: 700; }
 .gb-status.gb-error   { color: #c00; font-weight: 700; }
 
+
+/* ── News ticker ── */
+#news-ticker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: 2.25rem;
+  background: #FF1493;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+#ticker-label {
+  background: #cc0066;
+  color: #fff;
+  font-family: 'VT323', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  padding: 0 0.9rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-right: 2px solid #fff;
+}
+
+#ticker-track {
+  flex: 1;
+  overflow: hidden;
+}
+
+#ticker-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker-scroll 40s linear infinite;
+}
+
+#news-ticker:hover #ticker-content {
+  animation-play-state: paused;
+}
+
+#ticker-content a {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #fff;
+  text-decoration: none;
+  padding: 0 0.5rem;
+}
+
+#ticker-content a:hover { text-decoration: underline; }
+
+.ticker-sep {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
 
 /* ── Responsive ── */
 @media (max-width: 480px) {
