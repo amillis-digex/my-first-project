@@ -218,14 +218,49 @@
     loadMessages();
 
     // Fact bubble
-    const factLightbox  = document.getElementById('fact-lightbox');
-    const factTopicEl   = document.getElementById('fact-topic-label');
-    const factTextEl    = document.getElementById('fact-text');
+    const factLightbox = document.getElementById('fact-lightbox');
+    const factTopicEl  = document.getElementById('fact-topic-label');
+    const factTextEl   = document.getElementById('fact-text');
 
-    function openFact(topic, fact) {
+    const WIKI_PAGES = {
+      'Web Development': 'Web_development',
+      'UI/UX Design':    'User_experience_design',
+      'Data Analysis':   'Data_analysis',
+      'QuickBooks':      'QuickBooks',
+    };
+
+    const factCache = {};
+    const factIndex = {};
+
+    async function getWikiFacts(topic, fallback) {
+      if (factCache[topic]) return factCache[topic];
+      const title = WIKI_PAGES[topic];
+      const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`);
+      const data = await res.json();
+      const sentences = data.extract
+        .replace(/\(.*?\)/g, '')
+        .replace(/\[.*?\]/g, '')
+        .split(/(?<=[.!?])\s+/)
+        .map(s => s.trim())
+        .filter(s => s.length >= 40 && s.length <= 200);
+      factCache[topic] = sentences.length ? sentences : [fallback];
+      return factCache[topic];
+    }
+
+    async function openFact(topic, fallback) {
       factTopicEl.textContent = topic;
-      factTextEl.textContent  = fact;
+      factTextEl.textContent  = '✦  ✦  ✦';
+      factTextEl.classList.add('fact-loading');
       factLightbox.hidden = false;
+      try {
+        const facts = await getWikiFacts(topic, fallback);
+        if (!(topic in factIndex)) factIndex[topic] = 0;
+        factTextEl.textContent = facts[factIndex[topic] % facts.length];
+        factIndex[topic]++;
+      } catch {
+        factTextEl.textContent = fallback;
+      }
+      factTextEl.classList.remove('fact-loading');
     }
 
     function closeFact() { factLightbox.hidden = true; }
