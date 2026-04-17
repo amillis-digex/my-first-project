@@ -156,43 +156,40 @@
       const colors = ['255,20,147', '204,0,102', '160,0,220', '255,0,200', '180,0,255'];
 
       const rect = document.querySelector('.card').getBoundingClientRect();
-      const pad  = 40;
+      const pad  = 32;
       const vw   = window.innerWidth;
       const vh   = window.innerHeight;
-      const excl = {
-        top:    (rect.top    - pad) / vh * 100,
-        bottom: (rect.bottom + pad) / vh * 100,
-        left:   (rect.left   - pad) / vw * 100,
-        right:  (rect.right  + pad) / vw * 100,
-      };
 
-      // Build a grid of cells, keeping only those outside the card
-      const cols = 6, rows = 8;
-      const cw = 100 / cols, ch = 100 / rows;
-      const cells = [];
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const cx = c * cw + cw / 2;
-          const cy = r * ch + ch / 2;
-          if (cx < excl.left || cx > excl.right || cy < excl.top || cy > excl.bottom) {
-            cells.push({ top: r * ch, left: c * cw, w: cw, h: ch });
-          }
+      // Four natural zones around the card (as % of viewport)
+      const allZones = [
+        { top: 0,                               left: 0,                              w: (rect.left - pad) / vw * 100,          h: 100 },
+        { top: 0,                               left: (rect.right + pad) / vw * 100,  w: (vw - rect.right - pad) / vw * 100,   h: 100 },
+        { top: 0,                               left: 0,                              w: 100,                                    h: (rect.top - pad) / vh * 100 },
+        { top: (rect.bottom + pad) / vh * 100,  left: 0,                              w: 100,                                    h: (vh - rect.bottom - pad) / vh * 100 },
+      ].filter(z => z.w >= 4 && z.h >= 4);
+
+      if (!allZones.length) return;
+
+      const areas     = allZones.map(z => z.w * z.h);
+      const totalArea = areas.reduce((s, a) => s + a, 0);
+
+      wall.innerHTML = messages.map(m => {
+        const rand     = seededRand(hashStr(m.name + m.message));
+        const rotation = (rand() - 0.5) * 26;
+        const size     = 0.85 + rand() * 0.9;
+        const opacity  = 0.22 + rand() * 0.3;
+        const color    = colors[Math.floor(rand() * colors.length)];
+        const weight   = rand() > 0.5 ? 700 : 400;
+
+        let pick = rand() * totalArea;
+        let zone = allZones[allZones.length - 1];
+        for (let i = 0; i < allZones.length; i++) {
+          pick -= areas[i];
+          if (pick <= 0) { zone = allZones[i]; break; }
         }
-      }
 
-      wall.innerHTML = messages.slice(0, cells.length).map((m, i) => {
-        const cell      = cells[i % cells.length];
-        const styleRand = seededRand(hashStr(m.name + m.message));
-        const rotation  = (styleRand() - 0.5) * 24;
-        const size      = 0.85 + styleRand() * 1.0;
-        const opacity   = 0.22 + styleRand() * 0.3;
-        const color     = colors[Math.floor(styleRand() * colors.length)];
-        const weight    = styleRand() > 0.5 ? 700 : 400;
-
-        // Small seeded jitter within the cell
-        const jitter = seededRand(hashStr(m.name + m.message) ^ 0x12345678);
-        const top    = cell.top  + jitter() * cell.h * 0.55;
-        const left   = cell.left + jitter() * cell.w * 0.55;
+        const top  = zone.top  + rand() * zone.h * 0.9;
+        const left = zone.left + rand() * zone.w * 0.9;
 
         return `<div class="wall-entry" style="top:${top}%;left:${left}%;transform:rotate(${rotation}deg);font-size:${size}rem;opacity:${opacity};color:rgba(${color},1);font-weight:${weight};">
           <div class="wall-entry-name">${escapeHtml(m.name)}</div>
